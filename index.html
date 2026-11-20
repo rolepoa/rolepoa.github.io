@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rolê POA — Guia Semanal de Noite, Shows e Bares em Porto Alegre</title>
+
+  <!-- Google Fonts: Space Grotesk (Display) & Plus Jakarta Sans (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration: Sober Monochrome + Single Accent (#FF5500) -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Space Grotesk"', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            void: '#0A0A0B',
+            charcoal: '#141417',
+            graphite: '#1C1C21',
+            edge: '#27272A',
+            accent: {
+              DEFAULT: '#FF5500',
+              hover: '#E04B00',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Nocturnal monochrome base */
+    body {
+      background-color: #0A0A0B;
+      color: #F4F4F5;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Hide scrollbar on horizontal filter strips while keeping touch scroll */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Subtle hover elevation on dark cards */
+    .role-card {
+      background-color: #141417;
+      border: 1px solid #27272A;
+      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .role-card:hover {
+      transform: translateY(-2px);
+      border-color: #3F3F46;
+      background-color: #17171B;
+    }
+
+    /* Subtle dark scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0A0A0B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272A;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3F3F46;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-void text-zinc-100 antialiased selection:bg-accent selection:text-white">
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-void/95 backdrop-blur-md border-b border-edge">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-2 sm:gap-3">
+      <!-- Brand Identity -->
+      <a href="#top" id="brandReset" class="flex items-center gap-2.5 sm:gap-3 group focus:outline-none min-w-0">
+        <div class="w-9 h-9 rounded-lg bg-accent flex items-center justify-center text-white font-display font-bold text-lg tracking-tight shrink-0 transition-transform group-hover:scale-105">
+          R
+        </div>
+        <div class="leading-none truncate">
+          <span class="font-display font-bold text-base sm:text-xl tracking-tight text-white block truncate">
+            ROLÊ POA
+          </span>
+          <span class="text-[10px] sm:text-[11px] font-medium tracking-wider uppercase text-zinc-400 block truncate">
+            Guia Semanal • Porto Alegre
+          </span>
+        </div>
+      </a>
+
+      <!-- Right Actions: Fonte da Planilha & Roteiro da Semana -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          id="toggleSheetBarBtn"
+          aria-expanded="false"
+          aria-controls="sheetSourcePanel"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-graphite hover:bg-zinc-800 text-zinc-200 border border-edge text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+        >
+          <svg class="w-4 h-4 text-zinc-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <span class="hidden sm:inline">Fonte da Planilha</span>
+          <span class="sm:hidden">Planilha</span>
+        </button>
+
+        <button
+          type="button"
+          id="openRoteiroBtn"
+          class="inline-flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+          aria-label="Abrir Roteiro da Semana"
+        >
+          <svg class="w-4 h-4 text-white shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span class="hidden md:inline">Roteiro da Semana</span>
+          <span class="md:hidden">Roteiro</span>
+          <span id="roteiroCount" class="px-1.5 py-0.5 text-[11px] font-bold rounded bg-void text-white min-w-[20px] text-center">
+            0
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Collapsible Google Sheets Source Bar -->
+    <div id="sheetSourcePanel" class="hidden border-t border-edge bg-charcoal">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-3.5">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h2 class="font-display text-sm sm:text-base font-bold text-white">
+                Conexão com Google Sheets (Atualização Semanal)
+              </h2>
+              <span id="sourceBadge" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-graphite border border-edge text-zinc-300">
+                Dados Locais de Exemplo
+              </span>
+            </div>
+            <p id="syncStatusText" class="text-xs text-zinc-400 mt-0.5">
+              Usando curadoria local de exemplo. Cole o link da sua planilha pública do Google Sheets para sincronizar toda semana.
+            </p>
+          </div>
+
+          <!-- Source Mode Toggle + Sync Action -->
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <div class="inline-flex rounded-lg bg-void p-1 border border-edge" role="group" aria-label="Modo da fonte de dados">
+              <button
+                type="button"
+                id="modeSheetBtn"
+                class="px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer bg-accent text-white"
+              >
+                Planilha Conectada (CSV)
+              </button>
+              <button
+                type="button"
+                id="modeLocalBtn"
+                class="px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer text-zinc-300 hover:text-white"
+              >
+                Dados Locais de Exemplo
+              </button>
+            </div>
+
+            <button
+              type="button"
+              id="syncSheetBtn"
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white text-xs font-semibold transition-colors cursor-pointer"
+            >
+              <svg id="syncIcon" class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span id="syncBtnLabel">Sincronizar agora</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- URL Input Row -->
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <div class="flex-1">
+            <label for="sheetUrlInput" class="sr-only">URL pública ou ID da planilha do Google Sheets</label>
+            <input
+              type="text"
+              id="sheetUrlInput"
+              placeholder="Cole a URL do Google Sheets (ex: .../edit, .../export?format=csv, .../gviz/tq?tqx=out:csv ou ID da planilha)"
+              class="w-full px-3.5 py-2 rounded-lg bg-void border border-edge text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-accent"
+            />
+          </div>
+          <button
+            type="button"
+            id="saveSheetUrlBtn"
+            class="px-4 py-2 rounded-lg bg-graphite hover:bg-zinc-800 border border-edge text-xs sm:text-sm font-semibold text-white transition-colors shrink-0 cursor-pointer"
+          >
+            Salvar URL
+          </button>
+        </div>
+
+        <!-- Column Mapping Reference -->
+        <div class="p-3 rounded-lg bg-void border border-edge text-[11px] sm:text-xs text-zinc-400 leading-relaxed">
+          <span class="font-semibold text-zinc-200">Colunas esperadas na aba/planilha (linha 1 = cabeçalho):</span>
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">id</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">title</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">category</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">neighborhood</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">dayLabel</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">dayKey</code> (<span class="text-zinc-300">Qui, Sex, Sáb, Dom</span>),
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">priceLabel</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">isFree</code> (<span class="text-zinc-300">true/false/sim/free</span>),
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">vibe</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">tags</code> (<span class="text-zinc-300">separadas por ; ou |</span>),
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">image</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">url</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">mapsUrl</code>,
+          <code class="text-zinc-200 bg-graphite px-1.5 py-0.5 rounded mx-0.5">description</code>.
+          <span class="block mt-1 text-zinc-400">
+            Dica: deixe a planilha pública como <em>"Qualquer pessoa com o link pode ver"</em> ou publique na web como CSV. Se falhar ou estiver offline, o site mantém os dados locais automaticamente.
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="top" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+
+    <!-- Weekly Editorial Header & Search -->
+    <section class="mb-7 sm:mb-9">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 pb-6 border-b border-edge">
+        <div class="max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-charcoal border border-edge text-xs font-medium text-zinc-200 mb-3">
+            <span class="w-2 h-2 rounded-full bg-accent inline-block"></span>
+            <span>Edição Semanal · Atualizado toda semana</span>
+          </div>
+          <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.08]">
+            A noite, os shows e os bares de Porto Alegre na semana.
+          </h1>
+          <p class="mt-2.5 text-sm sm:text-base text-zinc-400 max-w-xl">
+            Curadoria semanal de eventos, shows ao vivo, festas e pistas, bares com som e espaços culturais em Porto Alegre.
+          </p>
+        </div>
+
+        <!-- Instant Search Input -->
+        <div class="w-full lg:w-80 xl:w-96">
+          <label for="searchInput" class="sr-only">Buscar rolês, shows, bares, pistas ou estilos</label>
+          <div class="relative">
+            <svg class="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
+            </svg>
+            <input
+              type="search"
+              id="searchInput"
+              placeholder="Buscar rolê, bar, pista, DJ, indie, samba..."
+              class="w-full pl-10 pr-9 py-2.5 rounded-lg bg-charcoal border border-edge text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-accent transition-colors"
+            />
+            <button
+              type="button"
+              id="clearSearchBtn"
+              title="Limpar busca"
+              class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-white rounded cursor-pointer"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters Controls -->
+      <div class="mt-5 space-y-4">
+        <!-- Category + Gratuito / Free Toggle -->
+        <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-3">
+          <div class="min-w-0 flex-1">
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              Categoria
+            </div>
+            <div id="categoryFilters" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" role="group" aria-label="Filtrar por categoria">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <!-- Gratuito / Free Toggle -->
+          <div class="shrink-0">
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2 xl:text-right">
+              Entrada
+            </div>
+            <button
+              type="button"
+              id="freeToggleBtn"
+              aria-pressed="false"
+              class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-charcoal hover:bg-graphite text-zinc-300 hover:text-white border border-edge text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+            >
+              <span id="freeToggleDot" class="w-2 h-2 rounded-full bg-zinc-500"></span>
+              <span>Gratuito / Free</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Day of Week + Neighborhood -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+          <!-- Day of Week ('Todos', 'Qui', 'Sex', 'Sáb', 'Dom') -->
+          <div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              Dia da Semana
+            </div>
+            <div id="dayFilters" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1" role="group" aria-label="Filtrar por dia da semana">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <!-- Neighborhood -->
+          <div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              Bairro
+            </div>
+            <div id="neighborhoodFilters" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1" role="group" aria-label="Filtrar por bairro">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Count & Clear Filters -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+          <p id="resultsCounter" class="text-xs sm:text-sm text-zinc-400">
+            Carregando agenda da semana...
+          </p>
+          <button
+            type="button"
+            id="resetFiltersBtn"
+            class="hidden text-xs font-semibold text-accent hover:text-accent-hover underline underline-offset-4 cursor-pointer"
+          >
+            Limpar todos os filtros
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cards Grid -->
+    <section aria-label="Recomendações da semana em Porto Alegre">
+      <div id="rolesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <!-- Cards rendered dynamically via JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="hidden rounded-xl bg-charcoal border border-edge p-10 text-center my-6">
+        <div class="w-12 h-12 rounded-full bg-graphite border border-edge flex items-center justify-center mx-auto mb-3 text-zinc-400">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+          </svg>
+        </div>
+        <h2 class="font-display text-lg font-bold text-white">Nenhum rolê encontrado</h2>
+        <p class="text-sm text-zinc-400 mt-1 max-w-md mx-auto">
+          Ajuste a busca, o dia da semana, o bairro, a categoria ou desative o filtro gratuito para ver mais opções da semana.
+        </p>
+        <button
+          type="button"
+          id="emptyResetBtn"
+          class="mt-4 px-4 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white text-sm font-semibold transition-colors cursor-pointer"
+        >
+          Mostrar todos os rolês
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-edge bg-charcoal/60 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-400">
+      <div>
+        <span class="font-display font-bold text-zinc-200">ROLÊ POA</span> — Edição Semanal · Atualizado toda semana em Porto Alegre.
+      </div>
+      <div>
+        Confira lotes, horários e capacidade dos espaços antes de sair.
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: ROTEIRO DA SEMANA -->
+  <div
+    id="roteiroModal"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="roteiroModalTitle"
+  >
+    <div class="bg-charcoal border border-edge rounded-xl w-full max-w-lg max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
+      <!-- Header -->
+      <div class="px-5 py-4 border-b border-edge flex items-center justify-between">
+        <div>
+          <h2 id="roteiroModalTitle" class="font-display text-lg font-bold text-white">Roteiro da Semana</h2>
+          <p class="text-xs text-zinc-400">Seus rolês favoritados para combinar com a turma.</p>
+        </div>
+        <button
+          type="button"
+          id="closeRoteiroBtn"
+          class="p-1.5 rounded-lg bg-graphite hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+          aria-label="Fechar Roteiro da Semana"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div id="roteiroListContainer" class="p-5 overflow-y-auto flex-1 space-y-3">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Footer -->
+      <div class="px-5 py-4 border-t border-edge bg-void/60 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+        <button
+          type="button"
+          id="clearRoteiroBtn"
+          class="px-3.5 py-2 rounded-lg bg-graphite hover:bg-zinc-800 border border-edge text-xs font-semibold text-zinc-300 transition-colors cursor-pointer"
+        >
+          Limpar roteiro
+        </button>
+        <button
+          type="button"
+          id="copyWhatsappBtn"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-accent hover:bg-accent-hover text-white text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <span id="copyWhatsappLabel">Copiar Roteiro (WhatsApp)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div
+    id="toastBanner"
+    class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 px-4 py-3 rounded-lg bg-graphite border border-zinc-600 text-white text-xs sm:text-sm font-medium shadow-xl"
+    role="status"
+    aria-live="polite"
+  >
+    <span class="w-2 h-2 rounded-full bg-accent shrink-0"></span>
+    <span id="toastMessage">Atualizado.</span>
+  </div>
+
+  <script>
+    /**
+     * =========================================================================
+     * ROLÊ POA — Weekly Nightlife & Cultural Guide Connected to Google Sheets
+     * =========================================================================
+     */
+
+    const STORAGE_KEYS = {
+      SHEET_URL: 'role_poa_sheet_url_v1',
+      USE_SHEET: 'role_poa_use_sheet_v1',
+      ROTEIRO: 'role_poa_roteiro_ids_v1'
+    };
+
+    const CATEGORIES = [
+      'Todos',
+      'Shows ao Vivo',
+      'Festas & Pistas',
+      'Bares com Som',
+      'Cultura & Feiras'
+    ];
+
+    const DAYS_OF_WEEK = [
+      'Todos',
+      'Qui',
+      'Sex',
+      'Sáb',
+      'Dom'
+    ];
+
+    const NEIGHBORHOODS = [
+      'Todos',
+      'Cidade Baixa',
+      'Bom Fim',
+      '4º Distrito',
+      'Centro Histórico',
+      'Independência',
+      'Moinhos de Vento'
+    ];
+
+    // 6 initial weekly recommendations for Porto Alegre (fallback & local dataset)
+    const INITIAL_ROLES = [
+      {
+        id: 'role-1',
+        title: 'Noite de Vinil & Drinks na CB',
+        category: 'Bares com Som',
+        neighborhood: 'Cidade Baixa',
+        dayLabel: 'Sex · 22h',
+        dayKey: 'Sex',
+        priceLabel: 'Gratuito',
+        isFree: true,
+        vibe: 'Groove, Soul & Calçada',
+        tags: ['Vinil', 'Drinks', 'Cidade Baixa'],
+        image: 'https://placehold.co/800x480/1C1C21/F4F4F5?text=Noite+de+Vinil+%26+Drinks+na+CB',
+        url: 'https://www.sympla.com.br/',
+        mapsUrl: 'https://maps.google.com/?q=Cidade+Baixa+Porto+Alegre',
+        description: 'Seleção de discos na agulha, coquetéis gelados e clima descontraído no coração boêmio da Cidade Baixa.'
+      },
+      {
+        id: 'role-2',
+        title: 'Indie & Synth Live Session',
+        category: 'Shows ao Vivo',
+        neighborhood: 'Bom Fim',
+        dayLabel: 'Sáb · 21h30',
+        dayKey: 'Sáb',
+        priceLabel: 'R$ 30',
+        isFree: false,
+        vibe: 'Guitarras, Synth & Banda Autoral',
+        tags: ['Indie', 'Synth', 'Ao Vivo'],
+        image: 'https://placehold.co/800x480/1C1C21/F4F4F5?text=Indie+%26+Synth+Live+Session',
+        url: 'https://www.sympla.com.br/',
+        mapsUrl: 'https://maps.google.com/?q=Bom+Fim+Porto+Alegre',
+        description: 'Shows ao vivo com bandas da cena independente gaúcha, sintetizadores analógicos e pista aberta após as apresentações.'
+      },
+      {
+        id: 'role-3',
+        title: 'Warehouse Bass & Techno',
+        category: 'Festas & Pistas',
+        neighborhood: '4º Distrito',
+        dayLabel: 'Sáb · 23h59',
+        dayKey: 'Sáb',
+        priceLabel: 'R$ 40',
+        isFree: false,
+        vibe: 'Pista Escura, Bass & Techno',
+        tags: ['Techno', 'Bass', '4º Distrito'],
+        image: 'https://placehold.co/800x480/1C1C21/F4F4F5?text=Warehouse+Bass+%26+Techno',
+        url: 'https://www.sympla.com.br/',
+        mapsUrl: 'https://maps.google.com/?q=4+Distrito+Porto+Alegre',
+        description: 'Som encorpado em espaço industrial no 4º Distrito com sets longos, iluminação baixa e madrugada adentro.'
+      },
+      {
+        id: 'role-4',
+        title: 'Roda de Samba & Quintal',
+        category: 'Cultura & Feiras',
+        neighborhood: 'Centro Histórico',
+        dayLabel: 'Dom · 16h',
+        dayKey: 'Dom',
+        priceLabel: 'Free até 17h',
+        isFree: true,
+        vibe: 'Samba de Raiz, Tarde & Resenha',
+        tags: ['Samba', 'Domingo', 'Centro'],
+        image: 'https://placehold.co/800x480/1C1C21/F4F4F5?text=Roda+de+Samba+%26+Quintal',
+        url: 'https://www.sympla.com.br/',
+        mapsUrl: 'https://maps.google.com/?q=Centro+Historico+Porto+Alegre',
+        description: 'Tarde de samba de roda, percussão acústica e clima de quintal para fechar a semana no Centro Histórico.'
+      },
+      {
+        id: 'role-5',
+        title: 'Quinta do Groove & Petiscos',
+        category: 'Bares com Som',
+        neighborhood: 'Moinhos de Vento',
+        dayLabel: 'Qui · 20h',
+        dayKey: 'Qui',
+        priceLabel: 'R$ 20',
+        isFree: false,
+        vibe: 'Funk Soul, Jazz Lounge & Drinks',
+        tags: ['Groove', 'Quinta', 'Moinhos'],
+        image: 'https://placehold.co/800x480/1C1C21/F4F4F5?text=Quinta+do+Groove+%26+Petiscos',
+        url: 'https://www.sympla.com.br/',
+        mapsUrl: 'https://maps.google.com/?q=Moinhos+de+Vento+Porto+Alegre',
+        description: 'Aquecimento de quinta-feira com DJs de groove e jazz moderno, carta de drinks e porções para dividir.'
+      },
+      {
+        id: 'role-6',
+        title: 'After Cultural & Arte Noturna',
+        category: 'Cultura & Feiras',
+        neighborhood: 'Independência',
+        dayLabel: 'Sex · 19h',
+        dayKey: 'Sex',
+        priceLabel: 'Gratuito',
+        isFree: true,
+        vibe: 'Zines, Exposição & Som Ambiente',
+        tags: ['Arte', 'Zines', 'Gratuito'],
+        image: 'https://placehold.co/800x480/1C1C21/F4F4F5?text=After+Cultural+%26+Arte+Noturna',
+        url: 'https://maps.google.com/?q=Independencia+Porto+Alegre',
+        mapsUrl: 'https://maps.google.com/?q=Independencia+Porto+Alegre',
+        description: 'Encontro cultural noturno com publicações independentes, trabalhos visuais e discotecagem experimental.'
+      }
+    ];
+
+    const state = {
+      roles: [...INITIAL_ROLES],
+      search: '',
+      category: 'Todos',
+      day: 'Todos',
+      neighborhood: 'Todos',
+      onlyFree: false,
+      roteiroIds: [],
+      sheetUrl: '',
+      useSheet: false,
+      isSyncing: false,
+      lastSyncStatus: 'Pronto com dados locais de exemplo.'
+    };
+
+    const els = {
+      toggleSheetBarBtn: document.getElementById('toggleSheetBarBtn'),
+      sheetSourcePanel: document.getElementById('sheetSourcePanel'),
+      sourceBadge: document.getElementById('sourceBadge'),
+      syncStatusText: document.getElementById('syncStatusText'),
+      modeSheetBtn: document.getElementById('modeSheetBtn'),
+      modeLocalBtn: document.getElementById('modeLocalBtn'),
+      syncSheetBtn: document.getElementById('syncSheetBtn'),
+      syncIcon: document.getElementById('syncIcon'),
+      syncBtnLabel: document.getElementById('syncBtnLabel'),
+      sheetUrlInput: document.getElementById('sheetUrlInput'),
+      saveSheetUrlBtn: document.getElementById('saveSheetUrlBtn'),
+      searchInput: document.getElementById('searchInput'),
+      clearSearchBtn: document.getElementById('clearSearchBtn'),
+      categoryFilters: document.getElementById('categoryFilters'),
+      freeToggleBtn: document.getElementById('freeToggleBtn'),
+      freeToggleDot: document.getElementById('freeToggleDot'),
+      dayFilters: document.getElementById('dayFilters'),
+      neighborhoodFilters: document.getElementById('neighborhoodFilters'),
+      resultsCounter: document.getElementById('resultsCounter'),
+      resetFiltersBtn: document.getElementById('resetFiltersBtn'),
+      rolesGrid: document.getElementById('rolesGrid'),
+      emptyState: document.getElementById('emptyState'),
+      emptyResetBtn: document.getElementById('emptyResetBtn'),
+      roteiroCount: document.getElementById('roteiroCount'),
+      openRoteiroBtn: document.getElementById('openRoteiroBtn'),
+      closeRoteiroBtn: document.getElementById('closeRoteiroBtn'),
+      roteiroModal: document.getElementById('roteiroModal'),
+      roteiroListContainer: document.getElementById('roteiroListContainer'),
+      clearRoteiroBtn: document.getElementById('clearRoteiroBtn'),
+      copyWhatsappBtn: document.getElementById('copyWhatsappBtn'),
+      copyWhatsappLabel: document.getElementById('copyWhatsappLabel'),
+      toastBanner: document.getElementById('toastBanner'),
+      toastMessage: document.getElementById('toastMessage'),
+      brandReset: document.getElementById('brandReset')
+    };
+
+    let toastTimeout = null;
+
+    function showToast(message) {
+      if (!els.toastBanner || !els.toastMessage) return;
+      els.toastMessage.textContent = message;
+      els.toastBanner.classList.remove('hidden');
+      els.toastBanner.classList.add('flex');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        els.toastBanner.classList.add('hidden');
+        els.toastBanner.classList.remove('flex');
+      }, 3000);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeExternalUrl(rawUrl, fallbackUrl) {
+      try {
+        const parsed = new URL(String(rawUrl || '').trim());
+        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+          return parsed.href;
+        }
+      } catch (_) {
+        // Invalid or relative URL falls back below
+      }
+      return fallbackUrl;
+    }
+
+    function safeImageUrl(rawUrl, titleText) {
+      const fallback = `https://placehold.co/800x480/1C1C21/F4F4F5?text=${encodeURIComponent(titleText || 'Role POA')}`;
+      try {
+        const parsed = new URL(String(rawUrl || '').trim());
+        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+          return parsed.href;
+        }
+      } catch (_) {
+        // Fallback below
+      }
+      return fallback;
+    }
+
+    /**
+     * Converts standard Google Sheets /edit or /d/ID URLs or raw Sheet IDs
+     * into a CSV export URL when needed, while preserving direct CSV/GViz URLs.
+     */
+    function normalizeGoogleSheetCsvUrl(input) {
+      const trimmed = String(input || '').trim();
+      if (!trimmed) return '';
+
+      // Raw Google Sheet ID pattern (alphanumeric, hyphens, underscores)
+      if (/^[a-zA-Z0-9-_]{20,}$/.test(trimmed)) {
+        return `https://docs.google.com/spreadsheets/d/${trimmed}/export?format=csv`;
+      }
+
+      try {
+        const url = new URL(trimmed);
+        if (url.hostname.includes('docs.google.com') && url.pathname.includes('/spreadsheets/d/')) {
+          const match = url.pathname.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+          const gid = url.searchParams.get('gid') || (url.hash.match(/gid=(\d+)/) ? url.hash.match(/gid=(\d+)/)[1] : '');
+
+          // Already formatted as CSV export or gviz CSV
+          if (
+            url.pathname.endsWith('/export') && url.searchParams.get('format') === 'csv' ||
+            (url.pathname.includes('/gviz/tq') && url.searchParams.get('tqx')?.includes('out:csv'))
+          ) {
+            return url.href;
+          }
+
+          if (match && match[1]) {
+            const sheetId = match[1];
+            const gidParam = gid ? `&gid=${encodeURIComponent(gid)}` : '';
+            return `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv${gidParam}`;
+          }
+        }
+        return url.href;
+      } catch (_) {
+        return trimmed;
+      }
+    }
+
+    /**
+     * Parses RFC-4180 style CSV text including quoted fields containing commas and newlines.
+     */
+    function parseCsv(csvText) {
+      const rows = [];
+      let currentRow = [];
+      let currentField = '';
+      let inQuotes = false;
+      const text = String(csvText || '').replace(/^\uFEFF/, '');
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (inQuotes) {
+          if (char === '"' && nextChar === '"') {
+            currentField += '"';
+            i++;
+          } else if (char === '"') {
+            inQuotes = false;
+          } else {
+            currentField += char;
+          }
+        } else {
+          if (char === '"') {
+            inQuotes = true;
+          } else if (char === ',') {
+            currentRow.push(currentField);
+            currentField = '';
+          } else if (char === '\r' && nextChar === '\n') {
+            currentRow.push(currentField);
+            rows.push(currentRow);
+            currentRow = [];
+            currentField = '';
+            i++;
+          } else if (char === '\n' || char === '\r') {
+            currentRow.push(currentField);
+            rows.push(currentRow);
+            currentRow = [];
+            currentField = '';
+          } else {
+            currentField += char;
+          }
+        }
+      }
+
+      if (currentField.length > 0 || currentRow.length > 0) {
+        currentRow.push(currentField);
+        rows.push(currentRow);
+      }
+
+      return rows.filter((row) => row.some((cell) => String(cell || '').trim() !== ''));
+    }
+
+    /**
+     * Normalizes dayKey to match filter pills ('Qui', 'Sex', 'Sáb', 'Dom').
+     */
+    function normalizeDayKey(rawDayKey, rawDayLabel) {
+      const combined = `${rawDayKey || ''} ${rawDayLabel || ''}`.toLowerCase();
+      if (combined.includes('qui')) return 'Qui';
+      if (combined.includes('sex')) return 'Sex';
+      if (combined.includes('sáb') || combined.includes('sab')) return 'Sáb';
+      if (combined.includes('dom')) return 'Dom';
+      return String(rawDayKey || 'Sex').trim() || 'Sex';
+    }
+
+    /**
+     * Parses boolean values for isFree from spreadsheet cells.
+     */
+    function parseBooleanFree(rawIsFree, rawPriceLabel) {
+      const val = String(rawIsFree || '').trim().toLowerCase();
+      if (['true', '1', 'sim', 'yes', 'gratuito', 'gratis', 'free'].includes(val)) {
+        return true;
+      }
+      if (['false', '0', 'nao', 'não', 'no'].includes(val)) {
+        return false;
+      }
+      const priceLower = String(rawPriceLabel || '').toLowerCase();
+      return priceLower.includes('gratuito') || priceLower.includes('grátis') || priceLower.includes('gratis') || priceLower.startsWith('free');
+    }
+
+    /**
+     * Maps CSV rows into structured Rolê POA items matching required schema.
+     */
+    function mapCsvRowsToRoles(csvRows) {
+      if (!Array.isArray(csvRows) || csvRows.length < 2) {
+        return [];
+      }
+
+      const headers = csvRows[0].map((h) => String(h || '').trim());
+      const records = [];
+
+      for (let r = 1; r < csvRows.length; r++) {
+        const row = csvRows[r];
+        const entry = {};
+        headers.forEach((header, idx) => {
+          if (header) {
+            entry[header] = row[idx] !== undefined ? String(row[idx]).trim() : '';
+          }
+        });
+
+        const title = entry.title || entry.nome || '';
+        if (!title) continue;
+
+        const priceLabel = entry.priceLabel || entry.preco || 'Consultar';
+        const isFree = parseBooleanFree(entry.isFree, priceLabel);
+        const dayLabel = entry.dayLabel || entry.horario || entry.dayKey || 'Semana';
+        const dayKey = normalizeDayKey(entry.dayKey, dayLabel);
+        const rawTags = entry.tags || '';
+        const tags = rawTags
+          ? rawTags
+              .split(/[;|,]/)
+              .map((t) => t.replace(/^#/, '').trim())
+              .filter(Boolean)
+          : [entry.category || 'Rolê POA'];
+
+        const mapsFallback = `https://maps.google.com/?q=${encodeURIComponent(title + ' ' + (entry.neighborhood || 'Porto Alegre'))}`;
+
+        records.push({
+          id: entry.id || `sheet-${r}`,
+          title,
+          category: entry.category || 'Bares com Som',
+          neighborhood: entry.neighborhood || 'Cidade Baixa',
+          dayLabel,
+          dayKey,
+          priceLabel: isFree && !priceLabel ? 'Gratuito' : priceLabel,
+          isFree,
+          vibe: entry.vibe || '',
+          tags,
+          image: safeImageUrl(entry.image, title),
+          url: safeExternalUrl(entry.url, mapsFallback),
+          mapsUrl: safeExternalUrl(entry.mapsUrl, mapsFallback),
+          description: entry.description || ''
+        });
+      }
+
+      return records;
+    }
+
+    /**
+     * Updates source indicator badges, status text, and mode buttons.
+     */
+    function updateSourceUi() {
+      if (els.sourceBadge) {
+        if (state.useSheet && state.sheetUrl) {
+          els.sourceBadge.textContent = 'Planilha Conectada (CSV)';
+          els.sourceBadge.className = 'px-2 py-0.5 rounded text-[11px] font-semibold bg-accent text-white';
+        } else {
+          els.sourceBadge.textContent = 'Dados Locais de Exemplo';
+          els.sourceBadge.className = 'px-2 py-0.5 rounded text-[11px] font-semibold bg-graphite border border-edge text-zinc-300';
+        }
+      }
+
+      if (els.syncStatusText) {
+        els.syncStatusText.textContent = state.lastSyncStatus;
+      }
+
+      if (els.modeSheetBtn && els.modeLocalBtn) {
+        if (state.useSheet) {
+          els.modeSheetBtn.className = 'px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer bg-accent text-white';
+          els.modeLocalBtn.className = 'px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer text-zinc-300 hover:text-white';
+        } else {
+          els.modeLocalBtn.className = 'px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer bg-accent text-white';
+          els.modeSheetBtn.className = 'px-3 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer text-zinc-300 hover:text-white';
+        }
+      }
+    }
+
+    /**
+     * Fetches and syncs Google Sheets CSV data with graceful fallback to INITIAL_ROLES.
+     */
+    async function syncFromGoogleSheets(silentFallbackToast = false) {
+      const rawInput = (els.sheetUrlInput ? els.sheetUrlInput.value : state.sheetUrl || '').trim();
+      const targetUrl = normalizeGoogleSheetCsvUrl(rawInput);
+
+      if (!targetUrl) {
+        state.roles = [...INITIAL_ROLES];
+        state.lastSyncStatus = 'Nenhuma URL de planilha configurada. Exibindo os 6 rolês locais de exemplo.';
+        updateSourceUi();
+        renderAllFiltersAndGrid();
+        if (!silentFallbackToast) {
+          showToast('Cole uma URL ou ID do Google Sheets para sincronizar.');
+        }
+        return;
+      }
+
+      if (state.isSyncing) return;
+      state.isSyncing = true;
+      if (els.syncIcon) els.syncIcon.classList.add('animate-spin');
+      if (els.syncBtnLabel) els.syncBtnLabel.textContent = 'Sincronizando...';
+
+      try {
+        const separator = targetUrl.includes('?') ? '&' : '?';
+        const cacheBustedUrl = `${targetUrl}${separator}_ts=${Date.now()}`;
+        const response = await fetch(cacheBustedUrl, { cache: 'no-store' });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const csvText = await response.text();
+        const rows = parseCsv(csvText);
+        const mapped = mapCsvRowsToRoles(rows);
+
+        if (mapped.length === 0) {
+          throw new Error('Planilha vazia ou sem linhas válidas');
+        }
+
+        state.roles = mapped;
+        state.useSheet = true;
+        state.sheetUrl = rawInput;
+        localStorage.setItem(STORAGE_KEYS.SHEET_URL, state.sheetUrl);
+        localStorage.setItem(STORAGE_KEYS.USE_SHEET, 'true');
+
+        const nowLabel = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        state.lastSyncStatus = `Sincronizado às ${nowLabel} • ${mapped.length} rolês carregados da planilha.`;
+        updateSourceUi();
+        renderAllFiltersAndGrid();
+        showToast(`Planilha sincronizada (${mapped.length} rolês).`);
+      } catch (err) {
+        state.roles = [...INITIAL_ROLES];
+        state.lastSyncStatus = 'Falha ao ler planilha (verifique se está pública/CSV ou se há internet). Mantendo dados locais de exemplo.';
+        updateSourceUi();
+        renderAllFiltersAndGrid();
+        if (!silentFallbackToast) {
+          showToast('Não foi possível ler a planilha. Usando dados locais de exemplo.');
+        }
+      } finally {
+        state.isSyncing = false;
+        if (els.syncIcon) els.syncIcon.classList.remove('animate-spin');
+        if (els.syncBtnLabel) els.syncBtnLabel.textContent = 'Sincronizar agora';
+      }
+    }
+
+    function switchToLocalDataset() {
+      state.useSheet = false;
+      localStorage.setItem(STORAGE_KEYS.USE_SHEET, 'false');
+      state.roles = [...INITIAL_ROLES];
+      state.lastSyncStatus = 'Modo local ativo: exibindo os 6 rolês de exemplo de Porto Alegre.';
+      updateSourceUi();
+      renderAllFiltersAndGrid();
+      showToast('Exibindo dados locais de exemplo.');
+    }
+
+    /**
+     * Filter Pills Renderer (single active color #FF5500)
+     */
+    function renderFilterPills(container, items, activeValue, onSelect) {
+      if (!container) return;
+      container.innerHTML = '';
+
+      items.forEach((item) => {
+        const isActive = item === activeValue;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = item;
+        btn.setAttribute('aria-pressed', String(isActive));
+        btn.className = isActive
+          ? 'px-3.5 py-1.5 rounded-lg bg-accent text-white text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-colors cursor-pointer'
+          : 'px-3.5 py-1.5 rounded-lg bg-charcoal hover:bg-graphite text-zinc-300 hover:text-white border border-edge text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 transition-colors cursor-pointer';
+
+        btn.addEventListener('click', () => onSelect(item));
+        container.appendChild(btn);
+      });
+    }
+
+    function updateFreeToggleUi() {
+      if (!els.freeToggleBtn || !els.freeToggleDot) return;
+      els.freeToggleBtn.setAttribute('aria-pressed', String(state.onlyFree));
+      if (state.onlyFree) {
+        els.freeToggleBtn.className =
+          'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-accent text-white text-xs sm:text-sm font-semibold transition-colors cursor-pointer';
+        els.freeToggleDot.className = 'w-2 h-2 rounded-full bg-white';
+      } else {
+        els.freeToggleBtn.className =
+          'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-charcoal hover:bg-graphite text-zinc-300 hover:text-white border border-edge text-xs sm:text-sm font-semibold transition-colors cursor-pointer';
+        els.freeToggleDot.className = 'w-2 h-2 rounded-full bg-zinc-500';
+      }
+    }
+
+    function getFilteredRoles() {
+      const q = state.search.trim().toLowerCase();
+
+      return state.roles.filter((role) => {
+        const matchCategory = state.category === 'Todos' || role.category === state.category;
+        const matchDay = state.day === 'Todos' || role.dayKey === state.day;
+        const matchNeighborhood = state.neighborhood === 'Todos' || role.neighborhood === state.neighborhood;
+        const matchFree = !state.onlyFree || Boolean(role.isFree);
+
+        const searchableText = [
+          role.title,
+          role.category,
+          role.neighborhood,
+          role.dayLabel,
+          role.dayKey,
+          role.priceLabel,
+          role.vibe,
+          role.description,
+          ...(role.tags || [])
+        ]
+          .join(' ')
+          .toLowerCase();
+
+        const matchSearch = !q || searchableText.includes(q);
+        return matchCategory && matchDay && matchNeighborhood && matchFree && matchSearch;
+      });
+    }
+
+    function updateRoteiroCounter() {
+      if (els.roteiroCount) {
+        els.roteiroCount.textContent = String(state.roteiroIds.length);
+      }
+    }
+
+    function persistRoteiro() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.ROTEIRO, JSON.stringify(state.roteiroIds));
+      } catch (_) {
+        // Ignore storage quota errors
+      }
+    }
+
+    function toggleRoteiro(roleId) {
+      const exists = state.roteiroIds.includes(roleId);
+      if (exists) {
+        state.roteiroIds = state.roteiroIds.filter((id) => id !== roleId);
+        showToast('Removido do Roteiro da Semana.');
+      } else {
+        state.roteiroIds.push(roleId);
+        showToast('Salvo no Roteiro da Semana.');
+      }
+      persistRoteiro();
+      updateRoteiroCounter();
+      renderRolesGrid();
+      if (!els.roteiroModal.classList.contains('hidden')) {
+        renderRoteiroModal();
+      }
+    }
+
+    function renderRolesGrid() {
+      const filtered = getFilteredRoles();
+      const hasActiveFilter =
+        state.search.trim() !== '' ||
+        state.category !== 'Todos' ||
+        state.day !== 'Todos' ||
+        state.neighborhood !== 'Todos' ||
+        state.onlyFree;
+
+      if (els.resetFiltersBtn) {
+        els.resetFiltersBtn.classList.toggle('hidden', !hasActiveFilter);
+      }
+
+      if (els.resultsCounter) {
+        if (filtered.length === 0) {
+          els.resultsCounter.textContent = '0 rolês encontrados nesta seleção';
+        } else if (filtered.length === 1) {
+          els.resultsCounter.textContent = '1 rolê na agenda da semana';
+        } else {
+          els.resultsCounter.textContent = `${filtered.length} rolês na agenda da semana`;
+        }
+      }
+
+      if (!els.rolesGrid || !els.emptyState) return;
+
+      if (filtered.length === 0) {
+        els.rolesGrid.innerHTML = '';
+        els.emptyState.classList.remove('hidden');
+        return;
+      }
+
+      els.emptyState.classList.add('hidden');
+
+      els.rolesGrid.innerHTML = filtered
+        .map((role) => {
+          const isSaved = state.roteiroIds.includes(role.id);
+          const safeImg = safeImageUrl(role.image, role.title);
+          const fallbackImg = safeImageUrl('', role.title);
+          const ticketHref = safeExternalUrl(role.url, role.mapsUrl);
+          const mapsHref = safeExternalUrl(role.mapsUrl, 'https://maps.google.com/?q=Porto+Alegre');
+
+          const tagsHtml = (role.tags || [])
+            .slice(0, 4)
+            .map(
+              (tag) =>
+                `<span class="px-2 py-0.5 rounded bg-graphite border border-edge text-[11px] font-medium text-zinc-300">#${escapeHtml(tag)}</span>`
+            )
+            .join('');
+
+          return `
+            <article class="role-card rounded-xl overflow-hidden flex flex-col justify-between">
+              <div>
+                <!-- Cover Image + Top Badges + Favorite Button -->
+                <div class="relative aspect-[16/10] w-full bg-graphite border-b border-edge overflow-hidden">
+                  <img
+                    src="${safeImg}"
+                    alt="${escapeHtml(role.title)}"
+                    loading="lazy"
+                    onerror="this.onerror=null;this.src='${fallbackImg}';"
+                    class="w-full h-full object-cover"
+                  />
+
+                  <!-- Day/Time & Price Badges -->
+                  <div class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 max-w-[78%]">
+                    <span class="px-2.5 py-1 rounded-md bg-void/90 border border-edge text-xs font-semibold text-white">
+                      ${escapeHtml(role.dayLabel)}
+                    </span>
+                    <span class="px-2.5 py-1 rounded-md bg-charcoal/95 border border-edge text-xs font-semibold text-zinc-100">
+                      ${escapeHtml(role.priceLabel)}
+                    </span>
+                  </div>
+
+                  <!-- Favorite Heart Button -->
+                  <button
+                    type="button"
+                    data-save-id="${escapeHtml(role.id)}"
+                    aria-pressed="${String(isSaved)}"
+                    aria-label="${isSaved ? 'Remover ' + escapeHtml(role.title) + ' do Roteiro da Semana' : 'Salvar ' + escapeHtml(role.title) + ' no Roteiro da Semana'}"
+                    title="${isSaved ? 'Salvo no roteiro' : 'Salvar no roteiro'}"
+                    class="absolute top-3 right-3 p-2 rounded-lg border transition-colors cursor-pointer ${
+                      isSaved
+                        ? 'bg-accent border-accent text-white'
+                        : 'bg-void/90 hover:bg-graphite border-edge text-zinc-300 hover:text-white'
+                    }"
+                  >
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-5">
+                  <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-zinc-400 mb-2">
+                    <span class="font-semibold uppercase tracking-wider text-zinc-300">
+                      ${escapeHtml(role.category)}
+                    </span>
+                    <span class="inline-flex items-center gap-1 font-medium text-zinc-300">
+                      <svg class="w-3.5 h-3.5 text-zinc-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      ${escapeHtml(role.neighborhood)}
+                    </span>
+                  </div>
+
+                  <h2 class="font-display text-xl font-bold text-white leading-snug">
+                    ${escapeHtml(role.title)}
+                  </h2>
+
+                  ${
+                    role.vibe
+                      ? `<p class="mt-1 text-xs font-semibold text-zinc-300">${escapeHtml(role.vibe)}</p>`
+                      : ''
+                  }
+
+                  <p class="mt-2.5 text-sm text-zinc-400 leading-relaxed">
+                    ${escapeHtml(role.description)}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Tags + Actions -->
+              <div class="px-5 pb-5 pt-3 border-t border-edge/80 space-y-3.5">
+                <div class="flex flex-wrap gap-1.5">
+                  ${tagsHtml}
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                  <a
+                    href="${escapeHtml(mapsHref)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-graphite hover:bg-zinc-800 border border-edge text-xs font-semibold text-zinc-100 transition-colors"
+                  >
+                    <svg class="w-3.5 h-3.5 text-zinc-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <span>Ver no Maps</span>
+                  </a>
+
+                  <a
+                    href="${escapeHtml(ticketHref)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white text-xs font-semibold transition-colors"
+                  >
+                    <span>Lista / Ingressos</span>
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join('');
+
+      els.rolesGrid.querySelectorAll('[data-save-id]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-save-id');
+          if (id) toggleRoteiro(id);
+        });
+      });
+    }
+
+    function renderAllFiltersAndGrid() {
+      renderFilterPills(els.categoryFilters, CATEGORIES, state.category, (val) => {
+        state.category = val;
+        renderAllFiltersAndGrid();
+      });
+
+      renderFilterPills(els.dayFilters, DAYS_OF_WEEK, state.day, (val) => {
+        state.day = val;
+        renderAllFiltersAndGrid();
+      });
+
+      renderFilterPills(els.neighborhoodFilters, NEIGHBORHOODS, state.neighborhood, (val) => {
+        state.neighborhood = val;
+        renderAllFiltersAndGrid();
+      });
+
+      updateFreeToggleUi();
+      renderRolesGrid();
+    }
+
+    function resetAllFilters() {
+      state.search = '';
+      state.category = 'Todos';
+      state.day = 'Todos';
+      state.neighborhood = 'Todos';
+      state.onlyFree = false;
+      if (els.searchInput) els.searchInput.value = '';
+      if (els.clearSearchBtn) els.clearSearchBtn.classList.add('hidden');
+      renderAllFiltersAndGrid();
+    }
+
+    function openRoteiroModal() {
+      renderRoteiroModal();
+      if (!els.roteiroModal) return;
+      els.roteiroModal.classList.remove('hidden');
+      els.roteiroModal.classList.add('flex');
+    }
+
+    function closeRoteiroModal() {
+      if (!els.roteiroModal) return;
+      els.roteiroModal.classList.add('hidden');
+      els.roteiroModal.classList.remove('flex');
+    }
+
+    function renderRoteiroModal() {
+      if (!els.roteiroListContainer) return;
+      const savedRoles = state.roles.filter((r) => state.roteiroIds.includes(r.id));
+
+      if (savedRoles.length === 0) {
+        els.roteiroListContainer.innerHTML = `
+          <div class="py-8 text-center">
+            <p class="text-sm font-medium text-zinc-300">Seu Roteiro da Semana está vazio.</p>
+            <p class="text-xs text-zinc-400 mt-1">Clique no coração nos cards para montar a programação da semana.</p>
+          </div>
+        `;
+        return;
+      }
+
+      els.roteiroListContainer.innerHTML = savedRoles
+        .map(
+          (role) => `
+          <div class="p-3.5 rounded-lg bg-graphite border border-edge flex items-start justify-between gap-3">
+            <div>
+              <div class="text-xs font-semibold text-zinc-300">
+                ${escapeHtml(role.dayLabel)} • ${escapeHtml(role.neighborhood)} • ${escapeHtml(role.priceLabel)}
+              </div>
+              <div class="font-display text-sm font-bold text-white mt-0.5">
+                ${escapeHtml(role.title)}
+              </div>
+              ${role.vibe ? `<div class="text-xs text-zinc-400 mt-0.5">${escapeHtml(role.vibe)}</div>` : ''}
+            </div>
+            <button
+              type="button"
+              data-remove-roteiro="${escapeHtml(role.id)}"
+              class="px-2.5 py-1 rounded bg-charcoal hover:bg-zinc-800 border border-edge text-xs font-medium text-zinc-300 hover:text-white transition-colors shrink-0 cursor-pointer"
+            >
+              Remover
+            </button>
+          </div>
+        `
+        )
+        .join('');
+
+      els.roteiroListContainer.querySelectorAll('[data-remove-roteiro]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-remove-roteiro');
+          if (id) toggleRoteiro(id);
+        });
+      });
+    }
+
+    function copyTextToClipboard(text, onSuccess) {
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(textarea);
+        if (ok) {
+          onSuccess();
+          return;
+        }
+      } catch (_) {
+        // Fallback below
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(text)
+          .then(onSuccess)
+          .catch(() => showToast('Não foi possível copiar automaticamente.'));
+      } else {
+        showToast('Não foi possível copiar automaticamente.');
+      }
+    }
+
+    function copyRoteiroWhatsapp() {
+      const savedRoles = state.roles.filter((r) => state.roteiroIds.includes(r.id));
+      if (savedRoles.length === 0) {
+        showToast('Adicione pelo menos um rolê ao Roteiro da Semana.');
+        return;
+      }
+
+      const lines = ['*ROLÊ POA — Roteiro da Semana*', ''];
+      savedRoles.forEach((role, idx) => {
+        lines.push(`${idx + 1}. *${role.title}*`);
+        lines.push(`   ${role.dayLabel} | ${role.neighborhood} | ${role.priceLabel}`);
+        if (role.mapsUrl) {
+          lines.push(`   Maps: ${role.mapsUrl}`);
+        }
+        lines.push('');
+      });
+
+      copyTextToClipboard(lines.join('\n').trim(), () => {
+        if (els.copyWhatsappLabel) {
+          const prev = els.copyWhatsappLabel.textContent;
+          els.copyWhatsappLabel.textContent = 'Copiado!';
+          setTimeout(() => {
+            els.copyWhatsappLabel.textContent = prev;
+          }, 1800);
+        }
+        showToast('Roteiro da semana copiado para o WhatsApp.');
+      });
+    }
+
+    function init() {
+      // Restore saved roteiro IDs
+      try {
+        const savedIds = JSON.parse(localStorage.getItem(STORAGE_KEYS.ROTEIRO) || '[]');
+        if (Array.isArray(savedIds)) {
+          state.roteiroIds = savedIds.map(String);
+        }
+      } catch (_) {
+        state.roteiroIds = [];
+      }
+
+      // Restore Google Sheets config
+      state.sheetUrl = localStorage.getItem(STORAGE_KEYS.SHEET_URL) || '';
+      state.useSheet = localStorage.getItem(STORAGE_KEYS.USE_SHEET) === 'true' && Boolean(state.sheetUrl);
+
+      if (els.sheetUrlInput && state.sheetUrl) {
+        els.sheetUrlInput.value = state.sheetUrl;
+      }
+
+      // Toggle Google Sheets connection bar
+      if (els.toggleSheetBarBtn && els.sheetSourcePanel) {
+        els.toggleSheetBarBtn.addEventListener('click', () => {
+          const isHidden = els.sheetSourcePanel.classList.contains('hidden');
+          els.sheetSourcePanel.classList.toggle('hidden', !isHidden);
+          els.toggleSheetBarBtn.setAttribute('aria-expanded', String(isHidden));
+        });
+      }
+
+      // Save URL & sync
+      if (els.saveSheetUrlBtn) {
+        els.saveSheetUrlBtn.addEventListener('click', () => {
+          const val = els.sheetUrlInput ? els.sheetUrlInput.value.trim() : '';
+          state.sheetUrl = val;
+          localStorage.setItem(STORAGE_KEYS.SHEET_URL, val);
+          if (!val) {
+            switchToLocalDataset();
+            return;
+          }
+          state.useSheet = true;
+          localStorage.setItem(STORAGE_KEYS.USE_SHEET, 'true');
+          syncFromGoogleSheets(false);
+        });
+      }
+
+      if (els.syncSheetBtn) {
+        els.syncSheetBtn.addEventListener('click', () => {
+          syncFromGoogleSheets(false);
+        });
+      }
+
+      if (els.modeSheetBtn) {
+        els.modeSheetBtn.addEventListener('click', () => {
+          state.useSheet = true;
+          localStorage.setItem(STORAGE_KEYS.USE_SHEET, 'true');
+          updateSourceUi();
+          syncFromGoogleSheets(false);
+        });
+      }
+
+      if (els.modeLocalBtn) {
+        els.modeLocalBtn.addEventListener('click', switchToLocalDataset);
+      }
+
+      // Search listeners
+      if (els.searchInput) {
+        els.searchInput.addEventListener('input', (e) => {
+          state.search = e.target.value || '';
+          if (els.clearSearchBtn) {
+            els.clearSearchBtn.classList.toggle('hidden', state.search.trim() === '');
+          }
+          renderRolesGrid();
+        });
+      }
+
+      if (els.clearSearchBtn) {
+        els.clearSearchBtn.addEventListener('click', () => {
+          state.search = '';
+          if (els.searchInput) els.searchInput.value = '';
+          els.clearSearchBtn.classList.add('hidden');
+          renderRolesGrid();
+        });
+      }
+
+      // Gratuito / Free toggle
+      if (els.freeToggleBtn) {
+        els.freeToggleBtn.addEventListener('click', () => {
+          state.onlyFree = !state.onlyFree;
+          renderAllFiltersAndGrid();
+        });
+      }
+
+      // Reset filters
+      if (els.resetFiltersBtn) {
+        els.resetFiltersBtn.addEventListener('click', resetAllFilters);
+      }
+      if (els.emptyResetBtn) {
+        els.emptyResetBtn.addEventListener('click', resetAllFilters);
+      }
+      if (els.brandReset) {
+        els.brandReset.addEventListener('click', resetAllFilters);
+      }
+
+      // Roteiro modal listeners
+      if (els.openRoteiroBtn) {
+        els.openRoteiroBtn.addEventListener('click', openRoteiroModal);
+      }
+      if (els.closeRoteiroBtn) {
+        els.closeRoteiroBtn.addEventListener('click', closeRoteiroModal);
+      }
+      if (els.roteiroModal) {
+        els.roteiroModal.addEventListener('click', (e) => {
+          if (e.target === els.roteiroModal) closeRoteiroModal();
+        });
+      }
+      if (els.clearRoteiroBtn) {
+        els.clearRoteiroBtn.addEventListener('click', () => {
+          state.roteiroIds = [];
+          persistRoteiro();
+          updateRoteiroCounter();
+          renderRoteiroModal();
+          renderRolesGrid();
+          showToast('Roteiro da semana limpo.');
+        });
+      }
+      if (els.copyWhatsappBtn) {
+        els.copyWhatsappBtn.addEventListener('click', copyRoteiroWhatsapp);
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeRoteiroModal();
+        }
+      });
+
+      updateRoteiroCounter();
+      updateSourceUi();
+      renderAllFiltersAndGrid();
+
+      if (state.useSheet && state.sheetUrl) {
+        syncFromGoogleSheets(true);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
