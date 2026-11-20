@@ -538,33 +538,77 @@
      * Carrega eventos da URL CSV se configurada; caso contrário ou em erro,
      * mantém a lista local intacta sem interromper a renderização.
      */
+    const CACHE_KEY = 'rolepoa_events_v1';
+
+    /** Última agenda que carregou com sucesso, guardada neste aparelho. */
+    function readCache() {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        const data = raw ? JSON.parse(raw) : null;
+        return Array.isArray(data) && data.length > 0 ? data : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function writeCache(events) {
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(events));
+      } catch (e) {}
+    }
+
+    /** fetch que desiste depois de alguns segundos, para a página nunca ficar travada. */
+    async function fetchWithTimeout(url, ms) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ms);
+      try {
+        return await fetch(url, { signal: controller.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    /**
+     * Carrega a planilha (2 tentativas, 10s cada). Se falhar, usa a última agenda
+     * salva no aparelho; só em último caso usa a lista local de reserva.
+     */
     async function loadEvents() {
       if (!CSV_URL) {
-        state.events = [...FALLBACK_EVENTS];
+        state.events = readCache() || [...FALLBACK_EVENTS];
         renderAll();
         return;
       }
 
-      try {
-        const separator = CSV_URL.includes('?') ? '&' : '?';
-        const response = await fetch(`${CSV_URL}${separator}_t=${Date.now()}`, {
-          cache: 'no-store'
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-        const text = await response.text();
-        const parsed = parseCSV(text);
-        if (parsed.length > 0) {
+      let ok = false;
+      for (let attempt = 0; attempt < 2 && !ok; attempt++) {
+        try {
+          const separator = CSV_URL.includes('?') ? '&' : '?';
+          const bucket = Math.floor(Date.now() / 60000);
+          const response = await fetchWithTimeout(`${CSV_URL}${separator}_t=${bucket}`, 10000);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const text = await response.text();
+          if (!text.split(/\r?\n/)[0].includes('title')) throw new Error('Resposta inesperada');
+          const parsed = parseCSV(text);
+          if (parsed.length === 0) throw new Error('CSV vazio');
           state.events = parsed;
+          writeCache(parsed);
           hideStatusBanner();
+          ok = true;
+        } catch (err) {
+          console.warn('Falha ao carregar a planilha:', err);
+          if (attempt === 0) await new Promise((r) => setTimeout(r, 1500));
+        }
+      }
+
+      if (!ok) {
+        const cached = readCache();
+        if (cached) {
+          state.events = cached;
+          showStatusBanner('Sem conexão com a agenda agora. Mostrando a última versão salva neste aparelho.');
         } else {
           state.events = [...FALLBACK_EVENTS];
+          showStatusBanner('Exibindo agenda local.');
         }
-      } catch (err) {
-        console.warn('Falha ao carregar CSV externo, mantendo dados locais:', err);
-        state.events = [...FALLBACK_EVENTS];
-        showStatusBanner('Exibindo agenda local atualizada.');
       }
 
       renderAll();
@@ -964,6 +1008,14 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       bindUIEvents();
+      // Mostra a última agenda salva na hora; a planilha atualiza em segundo plano.
+      const cached = readCache();
+      if (cached) {
+        state.events = cached;
+        renderAll();
+      } else {
+        showStatusBanner('Carregando agenda...');
+      }
       loadEvents();
     });
   </script>
