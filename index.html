@@ -1019,5 +1019,29 @@
       loadEvents();
     });
   </script>
+  <footer class="mt-16 border-t border-zinc-800/80 py-8 text-sm text-zinc-400">
+  <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="font-semibold text-zinc-100">Rolê POA · Sugestões e Propostas</p>
+      <p class="text-xs text-zinc-400">Envie dicas de eventos, line-ups ou propostas de parceria para Rolepoaa@gmail.com.</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-3">
+      <a
+        href="mailto:Rolepoaa@gmail.com?subject=Sugest%C3%A3o%20ou%20Proposta%20%E2%80%94%20Rol%C3%AA%20POA"
+        class="rounded-lg bg-orange-500 px-4 py-2 text-xs font-semibold text-zinc-950 transition hover:bg-orange-400"
+      >
+        Enviar por e-mail
+      </a>
+      <button
+        type="button"
+        onclick="navigator.clipboard.writeText('Rolepoaa@gmail.com'); this.textContent = 'E-mail copiado!'; setTimeout(() => this.textContent = 'Copiar e-mail', 2000);"
+        class="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-xs font-semibold text-zinc-100 transition hover:border-zinc-500"
+      >
+        Copiar e-mail
+      </button>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
