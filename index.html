@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ROLÊ POA — Guia Semanal de Porto Alegre</title>
+  <!-- Fonte Inter para leitura clara em mobile e desktop -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+<body id="topo" class="min-h-screen bg-zinc-950 text-zinc-100 antialiased selection:bg-orange-500 selection:text-white">
+  <!-- Cabeçalho fixo com marca e botão de atualização -->
+  <header class="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3.5 sm:px-6">
+      <a href="#topo" class="flex items-center gap-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500 text-lg font-extrabold text-zinc-950 shadow-sm">
+          R
+        </span>
+        <div>
+          <div class="text-base font-extrabold tracking-tight text-white sm:text-lg">
+            ROLÊ POA
+          </div>
+          <div class="text-xs text-zinc-400">
+            Edição Semanal · Porto Alegre
+          </div>
+        </div>
+      </a>
+
+      <nav aria-label="Ações principais" class="flex items-center gap-2">
+        <button
+          id="btn-refresh"
+          type="button"
+          class="inline-flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-zinc-100 transition hover:border-orange-500/60 hover:bg-zinc-800 active:scale-[0.99] sm:text-sm"
+        >
+          <svg id="refresh-icon" class="h-4 w-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Atualizar</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+    <!-- Hero / Título da edição -->
+    <section class="mb-6 rounded-2xl border border-zinc-800/90 bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-950 p-5 sm:p-7">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <span class="inline-flex items-center rounded-full border border-orange-500/30 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-300">
+            Porto Alegre · RS
+          </span>
+          <h1 class="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+            Agenda da semana em Porto Alegre
+          </h1>
+          <p class="mt-1.5 max-w-2xl text-sm text-zinc-400 sm:text-base">
+            Explore os rolês da semana separados por dia e gênero musical.
+          </p>
+        </div>
+
+        <!-- Contador de eventos exibidos -->
+        <div class="rounded-xl border border-zinc-800 bg-zinc-950/70 px-4 py-2.5 text-sm">
+          <span id="events-count" class="font-bold text-orange-400">0</span>
+          <span class="text-zinc-400"> eventos na seleção</span>
+        </div>
+      </div>
+
+      <!-- Fonte da agenda intencionalmente oculta conforme solicitação -->
+      <div id="agenda-source-info" class="hidden" aria-hidden="true"></div>
+    </section>
+
+    <!-- Filtros por Dia da Semana e Gênero Musical (sem categorias de tipo de evento) -->
+    <section aria-label="Filtros da agenda" class="mb-7 space-y-4 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-4 sm:p-5">
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-center">
+        <!-- Busca por palavra-chave -->
+        <div class="lg:col-span-5">
+          <label for="search-input" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            Buscar evento ou local
+          </label>
+          <input
+            id="search-input"
+            type="search"
+            placeholder="Ex.: Fresno, Floresta, Samba, Techno..."
+            class="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 transition focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+          />
+        </div>
+
+        <!-- Filtro de dia -->
+        <div class="lg:col-span-7">
+          <span class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            Dia da semana
+          </span>
+          <div id="day-filters" class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por dia">
+            <!-- Preenchido via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtro exclusivo por gênero musical -->
+      <div>
+        <div class="mb-2 flex items-center justify-between gap-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            Gênero musical
+          </span>
+          <button
+            id="btn-clear-filters"
+            type="button"
+            class="text-xs font-semibold text-orange-400 transition hover:text-orange-300"
+          >
+            Limpar filtros
+          </button>
+        </div>
+        <div id="genre-filters" class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por gênero musical">
+          <!-- Preenchido via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Banner de aviso discreto (sem expor fonte da agenda) -->
+    <div id="status-banner" class="mb-5 hidden rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-xs text-zinc-300 sm:text-sm"></div>
+
+    <!-- Grade de eventos -->
+    <section aria-label="Lista de eventos">
+      <div id="events-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Cards renderizados via JS -->
+      </div>
+    </section>
+
+    <!-- Modal / Painel de detalhes do evento -->
+    <div
+      id="event-modal"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-900 shadow-2xl">
+        <div class="relative h-56 w-full bg-zinc-950 sm:h-64">
+          <img
+            id="modal-image"
+            src="https://placehold.co/900x600/18181b/f97316?text=ROLE+POA"
+            alt=""
+            class="h-full w-full object-cover"
+          />
+          <button
+            id="modal-close"
+            type="button"
+            aria-label="Fechar detalhes"
+            class="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-700 bg-zinc-950/85 text-zinc-200 transition hover:bg-zinc-800 hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="p-5 sm:p-6">
+          <div id="modal-genres" class="mb-2.5 flex flex-wrap gap-1.5"></div>
+          <h2 id="modal-title" class="text-xl font-extrabold text-white sm:text-2xl"></h2>
+          <p id="modal-meta" class="mt-1.5 text-sm text-zinc-400"></p>
+          <p id="modal-vibe" class="mt-3 text-sm font-medium text-orange-300"></p>
+          <p id="modal-description" class="mt-3 text-sm leading-relaxed text-zinc-300"></p>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a
+              id="modal-ticket-link"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex flex-1 items-center justify-center rounded-xl bg-orange-500 px-4 py-3 text-sm font-bold text-zinc-950 transition hover:bg-orange-400"
+            >
+              Ver ingressos / página
+            </a>
+            <a
+              id="modal-map-link"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex flex-1 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700"
+            >
+              Abrir no mapa
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    /**
+     * URL CSV pública da planilha (se necessário, substitua pela URL publicada em CSV).
+     * Em caso de falha de rede ou bloqueio CORS, o aplicativo usa automaticamente
+     * os dados locais abaixo para garantir que os eventos sempre apareçam.
+     */
+    const CSV_URL = '';
+
+    // Termos não musicais a serem filtrados quando extrair gêneros de "tags"
+    const NON_GENRE_TOKENS = new Set([
+      'porto alegre',
+      'floresta',
+      'bom fim',
+      'cidade baixa',
+      'centro histórico',
+      'centro historico',
+      'praia de belas',
+      'zona sul',
+      'parque harmonia',
+      'domingo',
+      'shows',
+      'festival',
+      'pista',
+      'open bar',
+      'djs',
+      'coolture',
+      'shot time',
+      'baile',
+      'despido',
+      'lgbtqiapon+',
+      'lgbtqiapn+',
+      'coletivo plano'
+    ]);
+
+    // Base local de eventos da semana (espelhando a agenda atual)
+    const FALLBACK_EVENTS = [
+      {
+        id: '1',
+        title: 'Amplo X Cosmic',
+        neighborhood: 'Centro Histórico',
+        dayLabel: 'Sáb · 22h',
+        dayKey: 'sab',
+        priceLabel: 'A partir de R$ 50',
+        isFree: false,
+        vibe: 'Rolê eletrônica',
+        genres: ['Techno', 'House', 'Eletrônico'],
+        image: 'https://rolepoa.github.io/IMG_7487.jpeg',
+        url: 'https://shotgun.live/pt-br/events/amplo-x-cosmic?utm_source=ig&utm_medium=social&utm_content=link_in_bio',
+        mapsUrl: 'https://maps.app.goo.gl/bKjTdfnvWyVuWRY1A?g_st=ic',
+        description: 'Diferentes trajetórias, pesquisas e perspectivas sobre a música eletrônica se encontram no dia 28 de novembro.'
+      },
+      {
+        id: '2',
+        title: 'After Plano 12/12',
+        neighborhood: 'Floresta',
+        dayLabel: 'Sáb · 23h',
+        dayKey: 'sab',
+        priceLabel: 'A partir de R$ 40',
+        isFree: false,
+        vibe: 'Techno, trance e electro + pista até de manhã',
+        genres: ['Techno', 'Trance', 'Electro'],
+        image: 'https://rolepoa.github.io/IMG_7500.jpeg',
+        url: 'https://shotgun.live/pt-br/events/after-plano-12-12',
+        mapsUrl: 'https://maps.google.com/?q=Rua+Voluntarios+da+Patria,+1387,+Floresta,+Porto+Alegre',
+        description: 'Edição do Coletivo Plano no sábado, 12 de dezembro, das 23h às 06h, na S.B.C. Bambas da Orgia (Rua Voluntários da Pátria, 1387, Floresta), com lotes a partir de R$ 40.'
+      },
+      {
+        id: '3',
+        title: 'Despido #02',
+        neighborhood: 'Porto Alegre (Locação secreta)',
+        dayLabel: 'Sáb · 22h',
+        dayKey: 'sab',
+        priceLabel: 'A partir de R$ 45',
+        isFree: false,
+        vibe: 'Techno e house underground + pista inclusiva LGBTQIAPN+',
+        genres: ['Techno', 'House'],
+        image: 'https://rolepoa.github.io/IMG_7501.jpeg',
+        url: 'https://shotgun.live/pt-br/events/despido-02?utm_source=ig&utm_medium=social&utm_content=link_in_bio',
+        mapsUrl: 'https://maps.google.com/?q=Porto+Alegre,+RS',
+        description: 'Festa independente de música eletrônica underground no sábado, 5 de dezembro, das 22h às 10h, em locação secreta em Porto Alegre (revelada no dia), com lotes a partir de R$ 45.'
+      },
+      {
+        id: '4',
+        title: 'ARCA IS THE NEW BLOCO POA',
+        neighborhood: 'Praia de Belas',
+        dayLabel: 'Sáb · 16h',
+        dayKey: 'sab',
+        priceLabel: 'Ingressos',
+        isFree: false,
+        vibe: 'Clima de carnaval, DJs e open bar premium + tinta neon',
+        genres: ['Carnaval', 'Pop / Open Format'],
+        image: 'https://rolepoa.github.io/IMG_7502.jpeg',
+        url: 'https://ingresse.com/club688-1792511873439/',
+        mapsUrl: 'https://maps.google.com/?q=Parque+Mauricio+Sirotsky+Sobrinho+Porto+Alegre',
+        description: 'Edição de carnaval do Arca is The New Bloco em Porto Alegre no sábado, 28 de novembro, das 16h às 23h59, no Parque Maurício Sirotsky Sobrinho (Parque Harmonia), com DJs e Open Bar Premium (proibido para menores de 18 anos).'
+      },
+      {
+        id: '5',
+        title: 'COOLTURE | SHOT TIME | SÁBADO 28/11',
+        neighborhood: 'Porto Alegre',
+        dayLabel: 'Sáb · 23h30',
+        dayKey: 'sab',
+        priceLabel: 'Ingressos',
+        isFree: false,
+        vibe: 'Ritmo latino ao funk + 4 shots de hora em hora',
+        genres: ['Funk', 'Latino'],
+        image: 'https://picsum.photos/seed/rolepoa-coolture-shot-2811/900/600',
+        url: 'https://baladapp.com.br/pt-BR/eventos/coolture-shot-time-28-11/9558',
+        mapsUrl: 'https://maps.google.com/?q=Coolture+Porto+Alegre+RS',
+        description: 'Edição Coolture Shot Time no sábado, 28 de novembro de 2026, a partir das 23h30, no Coolture em Porto Alegre/RS, começando no ritmo latino e terminando no funk com 4 alarmes e 4 shots de hora em hora. Atrações: Beatnitz, RV e Marchese (+18).'
+      },
+      {
+        id: '6',
+        title: 'Samba de Lá no Grezz',
+        neighborhood: 'Floresta',
+        dayLabel: 'Dom · 17h',
+        dayKey: 'dom',
+        priceLabel: 'Ingressos',
+        isFree: false,
+        vibe: 'Samba de raiz + roda de domingo',
+        genres: ['Samba'],
+        image: 'https://picsum.photos/seed/rolepoa-samba-6/900/600',
+        url: 'https://www.vibeindex.com.br/events/porto-alegre-rs/page/3',
+        mapsUrl: 'https://maps.google.com/?q=Rua+Almirante+Barroso,+328+Porto+Alegre',
+        description: 'Encontro de domingo no Grezz com roda de samba reunindo SPN e Bloco do Cururu em 22 de novembro.'
+      },
+      {
+        id: '7',
+        title: 'Haikaiss 20 Anos no Opinião',
+        neighborhood: 'Cidade Baixa',
+        dayLabel: 'Sáb · 20h',
+        dayKey: 'sab',
+        priceLabel: 'Ingressos',
+        isFree: false,
+        vibe: 'Rap nacional + show comemorativo',
+        genres: ['Rap'],
+        image: 'https://rolepoa.github.io/IMG_7498.jpeg',
+        url: 'https://bileto.sympla.com.br/event/127514?algoliaID=938828bbf94a3a8b4c292466d0764e15&_gl=1*pohjlr*_gcl_au*MjA3MzE1MDk0NC4xNzk1MTUyMDUz*_ga*MTA2NDM1NzU2NC4xNzk1MTUyMDUz*_ga_KXH10SQTZF*czE3OTUxNTIwNTMkbzEkZzEkdDE3OTUxNTIwNjEkajUyJGwwJGgxNDc1NTUyNDI2',
+        mapsUrl: 'https://maps.google.com/?q=Rua+Jose+do+Patrocinio,+834+Porto+Alegre',
+        description: 'Turnê comemorativa de 20 anos do Haikaiss no Bar Opinião no sábado, 21 de novembro, às 20h.'
+      },
+      {
+        id: '8',
+        title: 'COOLTURE ON THE BEATS | SÁBADO 05/12',
+        neighborhood: 'Porto Alegre',
+        dayLabel: 'Sáb · 23h30',
+        dayKey: 'sab',
+        priceLabel: 'Ingressos',
+        isFree: false,
+        vibe: 'Dose dupla de beats e funk no centro da pista',
+        genres: ['Funk'],
+        image: 'https://picsum.photos/seed/rolepoa-coolture-beats-0512/900/600',
+        url: 'https://baladapp.com.br/pt-BR/eventos/coolture-on-the-beats-sabado-05-12/9714',
+        mapsUrl: 'https://maps.google.com/?q=Coolture+Porto+Alegre+RS',
+        description: 'Coolture On The Beats no sábado, 5 de dezembro de 2026, a partir das 23h30, no Coolture em Porto Alegre/RS, com dose dupla de beats, funk no centro e o projeto mascarado Aztrobeat. Atrações: Guz, Aztrobeat e Zion (+18).'
+      },
+      {
+        id: '9',
+        title: 'COOLTURE | BAILE COOLTURE | SÁBADO 12/12',
+        neighborhood: 'Porto Alegre',
+        dayLabel: 'Sáb · 23h30',
+        dayKey: 'sab',
+        priceLabel: 'Ingressos',
+        isFree: false,
+        vibe: 'Clima de verão e funk do começo ao fim',
+        genres: ['Funk'],
+        image: 'https://picsum.photos/seed/rolepoa-baile-coolture-1212/900/600',
+        url: 'https://baladapp.com.br/pt-BR/eventos/baile-coolture-sabado-12-12/9715',
+        mapsUrl: 'https://maps.google.com/?q=Coolture+Porto+Alegre+RS',
+        description: 'Baile Coolture no sábado, 12 de dezembro de 2026, a partir das 23h30, no Coolture em Porto Alegre/RS, com clima de verão e funk do começo ao fim. Atrações: Zion, Coruja & Kuzco e Saulit (+18).'
+      },
+      {
+        id: '10',
+        title: 'COOLTURE | SHOT TIME | SÁBADO 19/12',
+        neighborhood: 'Porto Alegre',
+        dayLabel: 'Sáb · 23h30',
+        dayKey: 'sab',
+        priceLabel: 'Ingressos',
+        isFree: false,
+        vibe: 'Ritmo latino ao funk + 4 shots de hora em hora',
+        genres: ['Funk', 'Latino'],
+        image: 'https://picsum.photos/seed/rolepoa-coolture-shot-1912/900/600',
+        url: 'https://baladapp.com.br/pt-BR/eventos/coolture-shot-time-sabado-19-12/9716',
+        mapsUrl: 'https://maps.google.com/?q=Coolture+Porto+Alegre+RS',
+        description: 'Edição Coolture Shot Time no sábado, 19 de dezembro de 2026, a partir das 23h30, no Coolture em Porto Alegre/RS, com início no ritmo latino, encerramento no funk e 4 rodadas de shot de hora em hora (+18).'
+      }
+    ];
+
+    const DAY_OPTIONS = [
+      { key: 'all', label: 'Todos os dias' },
+      { key: 'sex', label: 'Sexta' },
+      { key: 'sab', label: 'Sábado' },
+      { key: 'dom', label: 'Domingo' }
+    ];
+
+    // Estado reativo da aplicação
+    const state = {
+      events: [...FALLBACK_EVENTS],
+      selectedDay: 'all',
+      selectedGenre: 'all',
+      searchQuery: ''
+    };
+
+    /**
+     * Extrai apenas gêneros musicais a partir de uma string separada por ";",
+     * descartando bairros, locais ou termos não musicais.
+     */
+    function extractMusicalGenres(rawTags, fallbackVibe = '') {
+      const items = String(rawTags || '')
+        .split(';')
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+      const genres = items.filter((item) => !NON_GENRE_TOKENS.has(item.toLowerCase()));
+      if (genres.length > 0) return genres;
+
+      // Fallback simples caso a coluna tags não tenha gêneros explícitos
+      const vibeLower = String(fallbackVibe || '').toLowerCase();
+      const detected = [];
+      if (vibeLower.includes('techno')) detected.push('Techno');
+      if (vibeLower.includes('house')) detected.push('House');
+      if (vibeLower.includes('funk')) detected.push('Funk');
+      if (vibeLower.includes('samba')) detected.push('Samba');
+      if (vibeLower.includes('rap')) detected.push('Rap');
+      if (vibeLower.includes('latino')) detected.push('Latino');
+      if (vibeLower.includes('eletrô') || vibeLower.includes('eletro')) detected.push('Eletrônico');
+      if (vibeLower.includes('carnaval')) detected.push('Carnaval');
+      return detected.length > 0 ? detected : ['Música'];
+    }
+
+    /**
+     * Parser simples de CSV com suporte a aspas duplas para evitar quebra
+     * quando descrições ou links contêm vírgulas.
+     */
+    function parseCSV(csvText) {
+      const rows = [];
+      let row = [];
+      let field = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < csvText.length; i++) {
+        const char = csvText[i];
+        const next = csvText[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            field += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          row.push(field.trim());
+          field = '';
+        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+          if (char === '\r' && next === '\n') i++;
+          row.push(field.trim());
+          if (row.some((cell) => cell !== '')) {
+            rows.push(row);
+          }
+          row = [];
+          field = '';
+        } else {
+          field += char;
+        }
+      }
+
+      if (field.length > 0 || row.length > 0) {
+        row.push(field.trim());
+        if (row.some((cell) => cell !== '')) {
+          rows.push(row);
+        }
+      }
+
+      if (rows.length < 2) return [];
+
+      const headers = rows[0].map((h) => h.trim());
+      const indexOf = (name) => headers.indexOf(name);
+
+      return rows.slice(1).map((cols, idx) => {
+        const get = (colName) => {
+          const pos = indexOf(colName);
+          return pos >= 0 && pos < cols.length ? cols[pos].trim() : '';
+        };
+
+        const vibe = get('vibe');
+        const tags = get('tags');
+
+        return {
+          id: get('id') || String(idx + 1),
+          title: get('title') || `Evento ${idx + 1}`,
+          neighborhood: get('neighborhood') || 'Porto Alegre',
+          dayLabel: get('dayLabel') || 'Em breve',
+          dayKey: (get('dayKey') || 'all').toLowerCase(),
+          priceLabel: get('priceLabel') || 'Consultar',
+          isFree: String(get('isFree')).toUpperCase() === 'TRUE',
+          vibe,
+          genres: extractMusicalGenres(tags, vibe),
+          image: get('image') || 'https://placehold.co/900x600/18181b/f97316?text=ROLE+POA',
+          url: get('url') || '#topo',
+          mapsUrl: get('mapsUrl') || 'https://maps.google.com/?q=Porto+Alegre+RS',
+          description: get('description') || vibe || 'Confira os detalhes na página oficial do evento.'
+        };
+      });
+    }
+
+    /**
+     * Carrega eventos da URL CSV se configurada; caso contrário ou em erro,
+     * mantém a lista local intacta sem interromper a renderização.
+     */
+    async function loadEvents() {
+      if (!CSV_URL) {
+        state.events = [...FALLBACK_EVENTS];
+        renderAll();
+        return;
+      }
+
+      try {
+        const separator = CSV_URL.includes('?') ? '&' : '?';
+        const response = await fetch(`${CSV_URL}${separator}_t=${Date.now()}`, {
+          cache: 'no-store'
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const text = await response.text();
+        const parsed = parseCSV(text);
+        if (parsed.length > 0) {
+          state.events = parsed;
+          hideStatusBanner();
+        } else {
+          state.events = [...FALLBACK_EVENTS];
+        }
+      } catch (err) {
+        console.warn('Falha ao carregar CSV externo, mantendo dados locais:', err);
+        state.events = [...FALLBACK_EVENTS];
+        showStatusBanner('Exibindo agenda local atualizada.');
+      }
+
+      renderAll();
+    }
+
+    function showStatusBanner(msg) {
+      const banner = document.getElementById('status-banner');
+      if (!banner) return;
+      banner.textContent = msg;
+      banner.classList.remove('hidden');
+    }
+
+    function hideStatusBanner() {
+      const banner = document.getElementById('status-banner');
+      if (!banner) return;
+      banner.textContent = '';
+      banner.classList.add('hidden');
+    }
+
+    /**
+     * Coleta gêneros musicais únicos presentes nos eventos atuais.
+     */
+    function getAvailableGenres() {
+      const set = new Set();
+      state.events.forEach((ev) => {
+        (ev.genres || []).forEach((g) => {
+          if (g && g.trim()) set.add(g.trim());
+        });
+      });
+      return ['all', ...Array.from(set).sort((a, b) => a.localeCompare(b, 'pt-BR'))];
+    }
+
+    /**
+     * Filtra eventos por dia da semana, gênero musical e termo de busca.
+     */
+    function getFilteredEvents() {
+      const query = state.searchQuery.trim().toLowerCase();
+
+      return state.events.filter((ev) => {
+        const matchesDay =
+          state.selectedDay === 'all' ||
+          String(ev.dayKey || '').toLowerCase() === state.selectedDay;
+
+        const matchesGenre =
+          state.selectedGenre === 'all' ||
+          (ev.genres || []).some(
+            (g) => g.toLowerCase() === state.selectedGenre.toLowerCase()
+          );
+
+        const searchableText = [
+          ev.title,
+          ev.neighborhood,
+          ev.vibe,
+          ev.description,
+          ...(ev.genres || [])
+        ]
+          .join(' ')
+          .toLowerCase();
+
+        const matchesQuery = !query || searchableText.includes(query);
+
+        return matchesDay && matchesGenre && matchesQuery;
+      });
+    }
+
+    function renderDayFilters() {
+      const container = document.getElementById('day-filters');
+      if (!container) return;
+
+      container.innerHTML = '';
+      DAY_OPTIONS.forEach((opt) => {
+        const active = state.selectedDay === opt.key;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = opt.label;
+        btn.className = active
+          ? 'rounded-xl bg-orange-500 px-3.5 py-2 text-xs font-bold text-zinc-950 transition sm:text-sm'
+          : 'rounded-xl border border-zinc-800 bg-zinc-950/70 px-3.5 py-2 text-xs font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white sm:text-sm';
+
+        btn.addEventListener('click', () => {
+          state.selectedDay = opt.key;
+          renderAll();
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    function renderGenreFilters() {
+      const container = document.getElementById('genre-filters');
+      if (!container) return;
+
+      const genres = getAvailableGenres();
+      if (!genres.includes(state.selectedGenre)) {
+        state.selectedGenre = 'all';
+      }
+
+      container.innerHTML = '';
+      genres.forEach((genre) => {
+        const active = state.selectedGenre.toLowerCase() === genre.toLowerCase();
+        const label = genre === 'all' ? 'Todos os gêneros' : genre;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = label;
+        btn.className = active
+          ? 'rounded-full bg-orange-500 px-3.5 py-1.5 text-xs font-bold text-zinc-950 transition'
+          : 'rounded-full border border-zinc-800 bg-zinc-950/70 px-3.5 py-1.5 text-xs font-medium text-zinc-300 transition hover:border-orange-500/50 hover:text-white';
+
+        btn.addEventListener('click', () => {
+          state.selectedGenre = genre;
+          renderAll();
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    function renderEventsGrid() {
+      const grid = document.getElementById('events-grid');
+      const countEl = document.getElementById('events-count');
+      if (!grid) return;
+
+      const filtered = getFilteredEvents();
+      if (countEl) {
+        countEl.textContent = String(filtered.length);
+      }
+
+      grid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/50 p-8 text-center">
+            <p class="text-base font-semibold text-white">Nenhum evento encontrado para esse filtro.</p>
+            <p class="mt-1 text-sm text-zinc-400">Tente outro gênero musical, dia ou limpe a busca.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach((ev) => {
+        const card = document.createElement('article');
+        card.className =
+          'group flex flex-col overflow-hidden rounded-2xl border border-zinc-800/90 bg-zinc-900 transition hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/5';
+
+        const imgWrapper = document.createElement('div');
+        imgWrapper.className = 'relative h-48 w-full overflow-hidden bg-zinc-950';
+
+        const img = document.createElement('img');
+        img.src = ev.image;
+        img.alt = ev.title;
+        img.loading = 'lazy';
+        img.className = 'h-full w-full object-cover transition duration-300 group-hover:scale-105';
+        img.onerror = function () {
+          this.onerror = null;
+          this.src = `https://placehold.co/900x600/18181b/f97316?text=${encodeURIComponent(ev.title)}`;
+        };
+
+        const dayBadge = document.createElement('span');
+        dayBadge.className =
+          'absolute left-3 top-3 rounded-lg bg-zinc-950/85 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm';
+        dayBadge.textContent = ev.dayLabel;
+
+        const priceBadge = document.createElement('span');
+        priceBadge.className =
+          'absolute bottom-3 right-3 rounded-lg bg-orange-500 px-2.5 py-1 text-xs font-extrabold text-zinc-950 shadow';
+        priceBadge.textContent = ev.isFree ? 'Gratuito' : ev.priceLabel;
+
+        imgWrapper.appendChild(img);
+        imgWrapper.appendChild(dayBadge);
+        imgWrapper.appendChild(priceBadge);
+
+        const body = document.createElement('div');
+        body.className = 'flex flex-1 flex-col justify-between p-4 sm:p-5';
+
+        const topContent = document.createElement('div');
+
+        // Exibe exclusivamente os gêneros musicais (sem categoria de tipo de evento)
+        const genresRow = document.createElement('div');
+        genresRow.className = 'mb-2 flex flex-wrap gap-1.5';
+        (ev.genres || []).forEach((genre) => {
+          const pill = document.createElement('span');
+          pill.className =
+            'rounded-md border border-orange-500/25 bg-orange-500/10 px-2 py-0.5 text-[11px] font-semibold text-orange-300';
+          pill.textContent = genre;
+          genresRow.appendChild(pill);
+        });
+
+        const titleEl = document.createElement('h2');
+        titleEl.className = 'line-clamp-2 text-lg font-bold leading-snug text-white';
+        titleEl.textContent = ev.title;
+
+        const neighborhoodEl = document.createElement('p');
+        neighborhoodEl.className = 'mt-1 text-xs font-medium text-zinc-400';
+        neighborhoodEl.textContent = `📍 ${ev.neighborhood}`;
+
+        const vibeEl = document.createElement('p');
+        vibeEl.className = 'mt-2.5 line-clamp-2 text-sm text-zinc-300';
+        vibeEl.textContent = ev.vibe || ev.description;
+
+        topContent.appendChild(genresRow);
+        topContent.appendChild(titleEl);
+        topContent.appendChild(neighborhoodEl);
+        topContent.appendChild(vibeEl);
+
+        const actionsRow = document.createElement('div');
+        actionsRow.className = 'mt-4 flex items-center gap-2 border-t border-zinc-800/80 pt-3.5';
+
+        const detailsBtn = document.createElement('button');
+        detailsBtn.type = 'button';
+        detailsBtn.className =
+          'flex-1 rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-xs font-semibold text-white transition hover:bg-zinc-700';
+        detailsBtn.textContent = 'Detalhes';
+        detailsBtn.addEventListener('click', () => openEventModal(ev));
+
+        const ticketLink = document.createElement('a');
+        ticketLink.href = ev.url;
+        ticketLink.target = '_blank';
+        ticketLink.rel = 'noopener noreferrer';
+        ticketLink.className =
+          'flex-1 rounded-xl bg-orange-500 px-3 py-2 text-center text-xs font-bold text-zinc-950 transition hover:bg-orange-400';
+        ticketLink.textContent = 'Ingressos';
+
+        actionsRow.appendChild(detailsBtn);
+        actionsRow.appendChild(ticketLink);
+
+        body.appendChild(topContent);
+        body.appendChild(actionsRow);
+
+        card.appendChild(imgWrapper);
+        card.appendChild(body);
+        grid.appendChild(card);
+      });
+    }
+
+    function openEventModal(ev) {
+      const modal = document.getElementById('event-modal');
+      if (!modal || !ev) return;
+
+      const modalImg = document.getElementById('modal-image');
+      const modalGenres = document.getElementById('modal-genres');
+      const modalTitle = document.getElementById('modal-title');
+      const modalMeta = document.getElementById('modal-meta');
+      const modalVibe = document.getElementById('modal-vibe');
+      const modalDesc = document.getElementById('modal-description');
+      const modalTicket = document.getElementById('modal-ticket-link');
+      const modalMap = document.getElementById('modal-map-link');
+
+      if (modalImg) {
+        modalImg.src = ev.image;
+        modalImg.alt = ev.title;
+        modalImg.onerror = function () {
+          this.onerror = null;
+          this.src = `https://placehold.co/900x600/18181b/f97316?text=${encodeURIComponent(ev.title)}`;
+        };
+      }
+
+      if (modalGenres) {
+        modalGenres.innerHTML = '';
+        (ev.genres || []).forEach((g) => {
+          const span = document.createElement('span');
+          span.className =
+            'rounded-md border border-orange-500/30 bg-orange-500/10 px-2.5 py-1 text-xs font-semibold text-orange-300';
+          span.textContent = g;
+          modalGenres.appendChild(span);
+        });
+      }
+
+      if (modalTitle) modalTitle.textContent = ev.title;
+      if (modalMeta) {
+        const priceText = ev.isFree ? 'Gratuito' : ev.priceLabel;
+        modalMeta.textContent = `${ev.dayLabel} · 📍 ${ev.neighborhood} · ${priceText}`;
+      }
+      if (modalVibe) modalVibe.textContent = ev.vibe || '';
+      if (modalDesc) modalDesc.textContent = ev.description || '';
+      if (modalTicket) modalTicket.href = ev.url || '#topo';
+      if (modalMap) modalMap.href = ev.mapsUrl || 'https://maps.google.com/?q=Porto+Alegre+RS';
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeEventModal() {
+      const modal = document.getElementById('event-modal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function renderAll() {
+      try {
+        renderDayFilters();
+        renderGenreFilters();
+        renderEventsGrid();
+      } catch (err) {
+        console.error('Erro ao renderizar eventos:', err);
+      }
+    }
+
+    function bindUIEvents() {
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          state.searchQuery = e.target.value || '';
+          renderEventsGrid();
+        });
+      }
+
+      const clearBtn = document.getElementById('btn-clear-filters');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          state.selectedDay = 'all';
+          state.selectedGenre = 'all';
+          state.searchQuery = '';
+          if (searchInput) searchInput.value = '';
+          renderAll();
+        });
+      }
+
+      const refreshBtn = document.getElementById('btn-refresh');
+      if (refreshBtn) {
+        refreshBtn.addEventListener('click', async () => {
+          const icon = document.getElementById('refresh-icon');
+          if (icon) icon.classList.add('animate-spin');
+          await loadEvents();
+          if (icon) icon.classList.remove('animate-spin');
+        });
+      }
+
+      const modalClose = document.getElementById('modal-close');
+      const modal = document.getElementById('event-modal');
+      if (modalClose) modalClose.addEventListener('click', closeEventModal);
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeEventModal();
+        });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeEventModal();
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      bindUIEvents();
+      loadEvents();
+    });
+  </script>
+</body>
+</html>
